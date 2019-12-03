@@ -78,12 +78,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Perceptron.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Default.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <CudaCompile Include="Perceptron.cu" />
+    <ClInclude Include="Perceptron.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
