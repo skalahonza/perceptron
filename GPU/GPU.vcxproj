@@ -84,6 +84,9 @@
     <ClInclude Include="Default.h" />
     <ClInclude Include="Perceptron.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\OneDrive\!School\!Magistr\GPU\semestralData\diabetes.csv" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.1.targets" />

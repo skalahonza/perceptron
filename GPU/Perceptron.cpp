@@ -1,7 +1,9 @@
 #include <iostream>
 #include "Perceptron.h"
 
-Perceptron::Perceptron(float eta, int epochs) : m_epochs(epochs), learn_rate(eta) {}
+Perceptron::Perceptron(float eta, int epochs) : 
+	m_epochs(epochs), 
+	learn_rate(eta) {}
 
 void Perceptron::Fit(vector<vector<float>> data, vector<float> classes) {
     weights.resize(data[0].size(), 0);
@@ -21,11 +23,9 @@ void Perceptron::Fit(vector<vector<float>> data, vector<float> classes) {
 
 float Perceptron::NetInput(const vector<float> &input) {
     float prob = bias;
-
     for (size_t i = 0; i < input.size(); i++) {
         prob += input[i] * weights[i];
     }
-
     return prob;
 }
 
