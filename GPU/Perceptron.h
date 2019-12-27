@@ -7,7 +7,7 @@ class Perceptron
 public:
 	Perceptron(float eta, int epochs);
 	// Train Perceptron on given dataset
-	void Fit(vector<vector<float>> data, vector<float> classes);	
+	void Fit(vector<vector<float>> &data, vector<float> &classes);	
 	// Classify input data
 	float Predict(const vector<float>& X);
 private:

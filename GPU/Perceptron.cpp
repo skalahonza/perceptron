@@ -5,19 +5,23 @@ Perceptron::Perceptron(float eta, int epochs) :
 	m_epochs(epochs), 
 	learn_rate(eta) {}
 
-void Perceptron::Fit(vector<vector<float>> data, vector<float> classes) {
+void Perceptron::Fit(vector<vector<float>> &data, vector<float> &classes) {
     weights.resize(data[0].size(), 0);
 
     for (int i = 0; i < m_epochs; i++) {
-        cout << "Starting epoch: " << i << endl;
+        cout << "Starting epoch: " << i << " | ";
 
         for (size_t j = 0; j < data.size(); j++) {
             float update = learn_rate * (classes[j] - Predict(data[j]));
             for (size_t w = 0; w < weights.size(); w++) {
-                weights[w] += update * data[j][w];
+                weights[w] += update * data[j][w];				
             }
+			
             bias = update;
         }
+		for(auto x : weights)
+			cout << x << " ";
+		cout << endl;
     }
 }
 

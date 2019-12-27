@@ -77,15 +77,23 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CSV.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Perceptron.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CLI11.hpp" />
+    <ClInclude Include="CSV.h" />
     <ClInclude Include="Default.h" />
     <ClInclude Include="Perceptron.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="D:\OneDrive\!School\!Magistr\GPU\semestralData\diabetes.csv" />
+    <CopyFileToFolders Include="..\Data\iris_test.csv">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Data\iris_train.csv">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -8,7 +8,7 @@
       <UniqueIdentifier>{63859569-0e60-4d52-9952-979f93586d13}</UniqueIdentifier>
     </Filter>
     <Filter Include="Data">
-      <UniqueIdentifier>{3684d7f2-5ff4-4183-87e1-5f9fbb1f93cb}</UniqueIdentifier>
+      <UniqueIdentifier>{fd60ed8d-209e-4167-86e2-89e296e65a7e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -18,6 +18,10 @@
     <ClInclude Include="Perceptron.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="CLI11.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="CSV.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -26,10 +30,14 @@
     <ClCompile Include="Perceptron.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="CSV.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="D:\OneDrive\!School\!Magistr\GPU\semestralData\diabetes.csv">
+    <CopyFileToFolders Include="..\Data\iris_test.csv">
       <Filter>Data</Filter>
-    </None>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Data\iris_train.csv">
+      <Filter>Data</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
