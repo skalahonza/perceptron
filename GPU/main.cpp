@@ -21,7 +21,7 @@ void training(Perceptron *p){
 	vector<vector<float>> data;
 	vector<float> classes;
 	tie(data, classes) =  CSV::parse_data_with_classes(train);
-	p->Fit(data, classes);
+	p->fit(data, classes);
 }
 
 void evaluation(Perceptron *p){
@@ -33,7 +33,7 @@ void evaluation(Perceptron *p){
 
 	for (size_t i = 0; i < data.size(); i++)
 	{
-		auto result = p->Predict(data[i]);
+		auto result = p->predict(data[i]);
 		auto expected = classes[i];
 		if(verbose)
 			cout << "Classification: " << result << " Expected: " << expected << endl;
