@@ -18,5 +18,6 @@ private:
 	float bias;
 	vector<float> weights;
 	float net_input(const vector<float>& input);
+	float net_input_gpu(float *input, int length);
 };
 

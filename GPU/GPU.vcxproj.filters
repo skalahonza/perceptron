@@ -12,9 +12,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Default.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="Perceptron.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -22,6 +19,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="CSV.h" />
+    <ClInclude Include="kernels.cuh">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -39,5 +39,10 @@
     <CopyFileToFolders Include="..\Data\iris_train.csv">
       <Filter>Data</Filter>
     </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="kernels.cu">
+      <Filter>src</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>

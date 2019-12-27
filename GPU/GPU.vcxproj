@@ -84,7 +84,7 @@
   <ItemGroup>
     <ClInclude Include="CLI11.hpp" />
     <ClInclude Include="CSV.h" />
-    <ClInclude Include="Default.h" />
+    <ClInclude Include="kernels.cuh" />
     <ClInclude Include="Perceptron.h" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +94,9 @@
     <CopyFileToFolders Include="..\Data\iris_train.csv">
       <FileType>Document</FileType>
     </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="kernels.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
