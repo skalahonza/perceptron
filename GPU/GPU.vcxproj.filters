@@ -18,14 +18,18 @@
     <ClInclude Include="CLI11.hpp">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="CSV.h" />
     <ClInclude Include="kernels.cuh">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="default.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="debug.h" />
+    <ClInclude Include="debug.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="CSV.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -34,7 +38,9 @@
     <ClCompile Include="Perceptron.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="CSV.cpp" />
+    <ClCompile Include="CSV.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\Data\iris_test.csv">
