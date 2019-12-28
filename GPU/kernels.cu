@@ -15,6 +15,22 @@ void vector_add(float* A, const float* B, int numElements) {
 	k_vector_add << <1, numElements >> > (A, B, numElements);
 }
 
+__global__ void
+k_eval(float* predictions, float* classes, int* result, int size)
+{
+	int i = blockDim.x * blockIdx.x + threadIdx.x;
+	if (i < size)
+		result[i] = (predictions[i] == classes[i]) ? 1 : 0;
+}
+
+int* eval(float* predictions, float* classes, int size)
+{
+	int* result;
+	cudaMalloc(&result, size*sizeof(int));
+	k_eval << <1, size >> > (predictions, classes, result, size);
+	return result;
+}
+
 __device__ void
 d_dot(const float* v1, const float* v2, float* out, int size)
 {

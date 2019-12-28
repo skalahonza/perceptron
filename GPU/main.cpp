@@ -99,7 +99,16 @@ void evaluation_gpu(Perceptron* p) {
 	cout << "GPU EVALUATION" << endl;
 	cout << "==============" << endl;
 
-	p->predict_gpu(g_data, data.size(), width);
+	float* result = p->predict_gpu(g_data, data.size(), width);
+
+	int correct = p->verify(result, g_classes, data.size());
+	int wrong = data.size() - correct;
+
+	cout << "==============" << endl;
+	cout << "Total: " << data.size() << endl;
+	cout << "Correct: " << correct << " " << (correct / data.size()) * 100 << "%" << endl;
+	cout << "Wrong: " << wrong << " " << (wrong / data.size()) * 100 << "%" << endl;
+	cout << "==============" << endl;
 }
 
 int main(int argc, char* argv[])
@@ -116,6 +125,6 @@ int main(int argc, char* argv[])
 	training(p);
 	training_gpu(p);
 	evaluation(p);
-	evaluation_gpu(p);	
+	evaluation_gpu(p);
 	return 0;
 }

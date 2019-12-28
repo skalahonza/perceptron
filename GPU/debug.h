@@ -5,6 +5,18 @@
 #include "cuda_runtime.h"
 using namespace std;
 
+void print_cuda_array(int* data, int size)
+{
+	int* tmp = (int*)calloc(size, sizeof(int));
+	cudaMemcpy(tmp, data, size * sizeof(int), cudaMemcpyDeviceToHost);
+	for (size_t j = 0; j < size; j++)
+	{
+		cout << tmp[j] << " ";
+	}
+	cout << endl;
+	free(tmp);
+}
+
 void print_cuda_array(float* data, int size)
 {
 	float* tmp = (float*)calloc(size, sizeof(float));
