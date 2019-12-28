@@ -84,6 +84,7 @@
   <ItemGroup>
     <ClInclude Include="CLI11.hpp" />
     <ClInclude Include="CSV.h" />
+    <ClInclude Include="debug.h" />
     <ClInclude Include="default.h" />
     <ClInclude Include="kernels.cuh" />
     <ClInclude Include="Perceptron.h" />

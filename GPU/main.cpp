@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include <vector>
 #include <sstream>
@@ -18,22 +17,6 @@ void print(vector<float> const& input) {
 	copy(input.begin(),
 		input.end(),
 		ostream_iterator<int>(cout, ", "));
-}
-
-void print_cuda2d_array(float *data, int width, int height)
-{
-	size_t size = width*height;
-	float *tmp = (float*)calloc(size,sizeof(float));
-	cudaMemcpy(tmp, data, size * sizeof(float), cudaMemcpyDeviceToHost);	
-	for (size_t i = 0; i < height; i++)
-	{
-		for (size_t j = 0; j < width; j++)
-		{
-			cout << tmp[i*(size_t)width + j] << " ";
-		}
-		cout << endl;
-	}
-	free(tmp);
 }
 
 void training(Perceptron* p) {
@@ -61,8 +44,7 @@ void training_gpu(Perceptron* p) {
 		auto& current = data[i];
 		gpuErrchk(cudaMemcpy(g_data + i*width,&(current[0]),width * sizeof(float), cudaMemcpyHostToDevice));		
 	}
-	print_cuda2d_array(g_data,width,data.size());
-	//p->fit_gpu(g_data, g_classes, data.size(), data[0].size());
+	p->fit_gpu(g_data, g_classes, data.size(), width);
 }
 
 void evaluation(Perceptron* p) {
@@ -95,13 +77,13 @@ int main(int argc, char* argv[])
 	CLI::App app{ "CUDA Perceptron" };
 	app.add_option("-t,--train", train, "Training dataset, data and expected value.")->required();
 	app.add_option("-e,--eval", eval, "Dataset for evaluation, contains data with expected output.")->required();
-	app.add_option("-i,--iterations", iterations, "Number of iterations for training.")->default_val("100");
+	app.add_option("-i,--iterations", iterations, "Number of iterations for training.")->default_val("5");
 	app.add_option("-l,--lrate", learning_rate, "Learning rate.")->default_val("0.1");
 	app.add_flag("-v,--verbose", verbose, "Specify for verbose output");
 	CLI11_PARSE(app, argc, argv);
 
-	auto p = new Perceptron(learning_rate, iterations);
-	//training(p);
+	auto p = new Perceptron(learning_rate, iterations, verbose);
+	training(p);
 	training_gpu(p);
 	//evaluation(p);
 	return 0;

@@ -1,8 +1,9 @@
 #include "kernels.cuh"
 #define min(x,y) (x>y?x:y)
-#define ThreadPerBlock 256
+#define THREADS_PER_BLOCK 256
 //smallest multiple of threadsPerBlock
-#define blockPerGrid(n) min(32, ((n)+ThreadPerBlock-1) / ThreadPerBlock)
+#define sgm (X) ((X) > 0 ? 1.f : -1.f)
+#define blockPerGrid(n) min(32, ((n)+THREADS_PER_BLOCK-1) / THREADS_PER_BLOCK)
 
 __global__ void
 k_vector_add(float* A, const float* B, int numElements)
@@ -17,35 +18,23 @@ void vector_add(float* A, const float* B, int numElements) {
 }
 
 __device__ void
-d_dot(const float* V1, const float* V2, float* V3, int size)
+d_dot(const float* v1, const float* v2, float* out, int size)
 {
-	__shared__ float chache[ThreadPerBlock];
-	float temp;
-
-	unsigned int tid = blockDim.x * blockIdx.x + threadIdx.x;
-	const unsigned int chacheindex = threadIdx.x;
-
-	while (tid < size)
-	{
-		temp += V1[tid] * V2[tid];
-		tid += blockDim.x * gridDim.x;
+	__shared__ float cache[THREADS_PER_BLOCK];
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	cache[threadIdx.x] = 0.f;
+	while (i < size) {
+		cache[threadIdx.x] += v1[i] * v2[i];
+		i += gridDim.x * blockDim.x;
 	}
-
-	chache[chacheindex] = temp;
-
 	__syncthreads();
-
-	int i = blockDim.x / 2;
-	while (i != 0)
-	{
-		if (chacheindex < i)
-			chache[chacheindex] += chache[chacheindex + i];
+	i = THREADS_PER_BLOCK / 2;
+	while (i > 0) {
+		if (threadIdx.x < i) cache[threadIdx.x] += cache[threadIdx.x + i];
 		__syncthreads();
-		i >>= 1;
+		i /= 2;
 	}
-
-	if (chacheindex == 0)
-		V3[blockIdx.x] = chache[0];
+	if (threadIdx.x == 0) atomicAdd(out, cache[0]);
 }
 
 __global__ void
@@ -55,30 +44,35 @@ k_dot(const float* V1, const float* V2, float* V3, int size)
 }
 
 __global__ void
-k_update(float learn_rate, float* expected, float* data, float bias, float* weights, int size, float* result)
+k_update(float learn_rate, float* expected, float* data, float* bias, float* weights, int size, float* result)
 {
 	d_dot(data, weights, result, size);
-	*result += bias;
-	*result *= learn_rate;
+	if (blockIdx.x == 0 && threadIdx.x == 0)
+	{
+		*result = (*bias + *result) > 0 ? 1.f : -1.f;
+		*result = learn_rate * (*expected - *result);
+	}
 }
 
 float* dot(float* a, float* b, int size) {
 	float* c;
 	gpuErrchk(cudaMalloc(&c, 1 * sizeof(float)));
-	k_dot << <blockPerGrid(size), ThreadPerBlock >> > (a, b, c, size);
+	k_dot << <blockPerGrid(size), THREADS_PER_BLOCK >> > (a, b, c, size);
 	return c;
 }
 
-float* update(float learn_rate, float* expected, float* data, float bias, float* weights, int size)
+float* update(float learn_rate, float* expected, float* data, float* bias, float* weights, int size)
 {
 	float* result;
 	gpuErrchk(cudaMalloc(&result, 1 * sizeof(float)));
-	k_update << <blockPerGrid(size), ThreadPerBlock >> > (learn_rate, expected, data, bias, weights, size, result);
+	int block_count = size / THREADS_PER_BLOCK
+		+ ((size % THREADS_PER_BLOCK) ? 1 : 0); // alignment
+	k_update << <block_count, THREADS_PER_BLOCK >> > (learn_rate, expected, data, bias, weights, size, result);
 	return result;
 }
 
 __global__ void
-k_scale(float *scaler, float* vector, float *result, int size) {
+k_scale(float* scaler, float* vector, float* result, int size) {
 	int index = threadIdx.x + blockIdx.x * blockDim.x;
 	float s = *scaler;
 	if (index < size) {
@@ -86,6 +80,6 @@ k_scale(float *scaler, float* vector, float *result, int size) {
 	}
 }
 
-void scale(float *scaler, float* vector, float *result, int size) {
+void scale(float* scaler, float* vector, float* result, int size) {
 	k_scale << <1, size >> > (scaler, vector, result, size);
 }

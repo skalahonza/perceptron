@@ -1,36 +1,46 @@
 #include <iostream>
 #include "Perceptron.h"
 #include "kernels.cuh"
+#include "debug.h"
 
-Perceptron::Perceptron(float eta, int epochs) :
+Perceptron::Perceptron(float eta, int epochs, bool _verbose) :
 	m_epochs(epochs),
-	learn_rate(eta)
+	learn_rate(eta),
+	verbose(_verbose)
 {
 	// bias gpu
 	cudaMalloc(&bias_gpu, 1 * sizeof(float));
+	cudaMemset(bias_gpu, 0, sizeof(float));
 }
 
 void Perceptron::fit(vector<vector<float>>& data, vector<float>& classes) {
 	weights.resize(data[0].size(), 0);
 
 	for (int i = 0; i < m_epochs; i++) {
-		cout << "Starting epoch: " << i << " | ";
+		if (verbose)
+			cout << "Starting epoch: " << i << " | ";
 
 		for (size_t j = 0; j < data.size(); j++) {
 			float update = learn_rate * (classes[j] - predict(data[j]));
 			for (size_t w = 0; w < weights.size(); w++) {
 				weights[w] += update * data[j][w];
 			}
-
+			if (verbose && update)
+				cout << "(" << update << "," << j << ")" << " ";
 			bias = update;
 		}
-		for (auto x : weights)
-			cout << x << " ";
-		cout << endl;
+
+		if (verbose) {
+			cout << " | Weights: ";
+			for (auto x : weights)
+				cout << x << " ";
+			cout << "| Bias: " << bias;
+			cout << endl;
+		}
 	}
 }
 
-void Perceptron::fit_gpu(float** data, float* classes, int data_len, int size)
+void Perceptron::fit_gpu(float* data, float* classes, int data_len, int size)
 {
 	// resize weights
 	if (weights_gpu != nullptr)
@@ -38,18 +48,35 @@ void Perceptron::fit_gpu(float** data, float* classes, int data_len, int size)
 		gpuErrchk(cudaFree(weights_gpu));
 	}
 	gpuErrchk(cudaMalloc(&weights_gpu, size * sizeof(float)));
+	gpuErrchk(cudaMemset(weights_gpu, 0, size * sizeof(float)));
 
 	for (int i = 0; i < m_epochs; i++) {
+		if (verbose)
+			cout << "Starting GPU epoch: " << i << " | ";
 		//parallel data - kernel
-
 		for (size_t j = 0; j < data_len; j++) {
 			// parallel prediction			            
-			float* u = update(learn_rate, (classes + j), data[j], bias, weights_gpu, data_len);
+			float* u = update(learn_rate, (classes + j), (data + size * j), bias_gpu, weights_gpu, size);
 			// parallel weight adjustment
 			// W = u*D
-			scale(u, data[j], weights_gpu, size);
-			gpuErrchk(cudaMemcpy(bias_gpu,u,sizeof(float),cudaMemcpyDeviceToDevice));			
+			scale(u, (data + size * j), weights_gpu, size);
+			gpuErrchk(cudaMemcpy(bias_gpu, u, sizeof(float), cudaMemcpyDeviceToDevice));
 			gpuErrchk(cudaFree(u));
+		}
+
+		if (verbose) {
+			float* ws = (float*)calloc(size, sizeof(float));
+			float* b = (float*)calloc(1, sizeof(float));
+			gpuErrchk(cudaMemcpy(ws, weights_gpu, sizeof(float) * size, cudaMemcpyDeviceToHost));
+			gpuErrchk(cudaMemcpy(b, bias_gpu, sizeof(float) * 1, cudaMemcpyDeviceToHost));
+			cout << "Weights GPU: ";
+			for (size_t i = 0; i < size; i++)
+			{
+				cout << ws[i] << " ";
+			}
+			cout << "| Bias GPU: " << *b;
+			cout << endl;
+			free(ws);
 		}
 	}
 }

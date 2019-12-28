@@ -25,6 +25,7 @@
     <ClInclude Include="default.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="debug.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
