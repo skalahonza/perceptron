@@ -24,14 +24,12 @@ void Perceptron::fit(vector<vector<float>>& data, vector<float>& classes) {
 			float update = learn_rate * (classes[j] - predict(data[j]));
 			for (size_t w = 0; w < weights.size(); w++) {
 				weights[w] += update * data[j][w];
-			}
-			if (verbose && update)
-				cout << "(" << update << "," << j << ")" << " ";
+			}			
 			bias = update;
 		}
 
 		if (verbose) {
-			cout << " | Weights: ";
+			cout << "Weights: ";
 			for (auto x : weights)
 				cout << x << " ";
 			cout << "| Bias: " << bias;

@@ -1,9 +1,5 @@
 #include "kernels.cuh"
-#define min(x,y) (x>y?x:y)
 #define THREADS_PER_BLOCK 256
-//smallest multiple of threadsPerBlock
-#define sgm (X) ((X) > 0 ? 1.f : -1.f)
-#define blockPerGrid(n) min(32, ((n)+THREADS_PER_BLOCK-1) / THREADS_PER_BLOCK)
 
 __global__ void
 k_vector_add(float* A, const float* B, int numElements)
@@ -13,6 +9,7 @@ k_vector_add(float* A, const float* B, int numElements)
 		A[i] = A[i] + B[i];
 }
 
+/// Add two vectors
 void vector_add(float* A, const float* B, int numElements) {
 	k_vector_add << <1, numElements >> > (A, B, numElements);
 }
@@ -54,6 +51,7 @@ k_update(float learn_rate, float* expected, float* data, float* bias, float* wei
 	}
 }
 
+/// Compute dot product of two vectors
 float* dot(float* a, float* b, int size) {
 	float* c;
 	gpuErrchk(cudaMalloc(&c, 1 * sizeof(float)));
@@ -61,6 +59,7 @@ float* dot(float* a, float* b, int size) {
 	return c;
 }
 
+/// Compute udpate value for training
 float* update(float learn_rate, float* expected, float* data, float* bias, float* weights, int size)
 {
 	float* result;
@@ -80,6 +79,7 @@ k_scale(float* scaler, float* vector, float* result, int size) {
 	}
 }
 
+/// Scale vector with a given scaler and save to result
 void scale(float* scaler, float* vector, float* result, int size) {
 	k_scale << <1, size >> > (scaler, vector, result, size);
 }
