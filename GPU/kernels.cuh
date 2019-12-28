@@ -1,12 +1,14 @@
 #pragma once
-#include "cuda_runtime.h"
-#include "device_launch_parameters.h"
-#include "device_atomic_functions.h"
-#include <device_functions.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "default.h"
 
 // dot product
 // scalar vector multiplication
 // calssification
 // evaluation reduction sum
+
+
+float* update(float learn_rate, float* expected, float* data, float bias, float *weights, int size);
+float *dot(float* a, float* b, int size);
+void scale(float *scaler, float* vector, float *result, int size);
