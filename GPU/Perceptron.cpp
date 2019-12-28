@@ -24,7 +24,7 @@ void Perceptron::fit(vector<vector<float>>& data, vector<float>& classes) {
 			float update = learn_rate * (classes[j] - predict(data[j]));
 			for (size_t w = 0; w < weights.size(); w++) {
 				weights[w] += update * data[j][w];
-			}			
+			}
 			bias = update;
 		}
 
@@ -89,4 +89,11 @@ float Perceptron::net_input(const vector<float>& input) {
 
 float Perceptron::predict(const vector<float>& X) {
 	return net_input(X) > 0 ? 1.f : -1.f;
+}
+
+float* Perceptron::predict_gpu(float* data, int length, int size)
+{
+	float* result = classify(data, weights_gpu, bias_gpu, length, size);
+	print_cuda_array(result, length);
+	return result;
 }

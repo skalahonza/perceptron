@@ -1,5 +1,6 @@
 #include "kernels.cuh"
 #define THREADS_PER_BLOCK 256
+#define BLOCK_COUNT(SIZE) ((SIZE) / THREADS_PER_BLOCK + (((SIZE) % THREADS_PER_BLOCK) ? 1 : 0))
 
 __global__ void
 k_vector_add(float* A, const float* B, int numElements)
@@ -55,7 +56,8 @@ k_update(float learn_rate, float* expected, float* data, float* bias, float* wei
 float* dot(float* a, float* b, int size) {
 	float* c;
 	gpuErrchk(cudaMalloc(&c, 1 * sizeof(float)));
-	k_dot << <blockPerGrid(size), THREADS_PER_BLOCK >> > (a, b, c, size);
+	int bc = BLOCK_COUNT(size);
+	k_dot << <bc, THREADS_PER_BLOCK >> > (a, b, c, size);
 	return c;
 }
 
@@ -64,9 +66,8 @@ float* update(float learn_rate, float* expected, float* data, float* bias, float
 {
 	float* result;
 	gpuErrchk(cudaMalloc(&result, 1 * sizeof(float)));
-	int block_count = size / THREADS_PER_BLOCK
-		+ ((size % THREADS_PER_BLOCK) ? 1 : 0); // alignment
-	k_update << <block_count, THREADS_PER_BLOCK >> > (learn_rate, expected, data, bias, weights, size, result);
+	int bc = BLOCK_COUNT(size);
+	k_update << <bc, THREADS_PER_BLOCK >> > (learn_rate, expected, data, bias, weights, size, result);
 	return result;
 }
 
@@ -82,4 +83,28 @@ k_scale(float* scaler, float* vector, float* result, int size) {
 /// Scale vector with a given scaler and save to result
 void scale(float* scaler, float* vector, float* result, int size) {
 	k_scale << <1, size >> > (scaler, vector, result, size);
+}
+
+__global__ void
+k_classify(float* data, float* weights, float* bias, float* result, int length, int size)
+{
+	int index = blockIdx.x * blockDim.x + threadIdx.x;
+	if (index < length) {
+		float* current = data + index * size;
+		float prob = *bias;
+		for (int i = 0; i < size; i++)
+		{
+			prob += current[i] * weights[i];
+		}
+		result[index] = prob > 0 ? 1.f : -1.f;
+	}
+}
+
+float* classify(float* data, float* weights, float* bias, int length, int size)
+{
+	float* result;
+	gpuErrchk(cudaMalloc(&result, length * sizeof(float)));
+	int bc = BLOCK_COUNT(length);
+	k_classify << < bc, THREADS_PER_BLOCK >> > (data, weights, bias, result, length, size);
+	return result;
 }

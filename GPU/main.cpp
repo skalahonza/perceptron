@@ -35,14 +35,14 @@ void training_gpu(Perceptron* p) {
 	gpuErrchk(cudaMalloc(&g_classes, classes.size() * sizeof(float)));
 	gpuErrchk(cudaMemcpy(g_classes, &classes[0], classes.size() * sizeof(float), cudaMemcpyHostToDevice));
 
-	float* g_data;	
+	float* g_data;
 	size_t pitch;
 	auto width = data[0].size();
-	cudaMallocPitch((void**)&g_data, &pitch, width * sizeof(float), data.size());	
+	cudaMallocPitch((void**)&g_data, &pitch, width * sizeof(float), data.size());
 	for (size_t i = 0; i < data.size(); i++)
 	{
 		auto& current = data[i];
-		gpuErrchk(cudaMemcpy(g_data + i*width,&(current[0]),width * sizeof(float), cudaMemcpyHostToDevice));		
+		gpuErrchk(cudaMemcpy(g_data + i * width, &(current[0]), width * sizeof(float), cudaMemcpyHostToDevice));
 	}
 	p->fit_gpu(g_data, g_classes, data.size(), width);
 }
@@ -53,6 +53,10 @@ void evaluation(Perceptron* p) {
 	tie(data, classes) = CSV::parse_data_with_classes(eval);
 
 	unsigned int correct = 0;
+
+	cout << "==============" << endl;
+	cout << "CPU EVALUATION" << endl;
+	cout << "==============" << endl;
 
 	for (size_t i = 0; i < data.size(); i++)
 	{
@@ -72,6 +76,32 @@ void evaluation(Perceptron* p) {
 	cout << "==============" << endl;
 }
 
+void evaluation_gpu(Perceptron* p) {
+	vector<vector<float>> data;
+	vector<float> classes;
+	tie(data, classes) = CSV::parse_data_with_classes(eval);
+
+	float* g_classes;
+	gpuErrchk(cudaMalloc(&g_classes, classes.size() * sizeof(float)));
+	gpuErrchk(cudaMemcpy(g_classes, &classes[0], classes.size() * sizeof(float), cudaMemcpyHostToDevice));
+
+	float* g_data;
+	size_t pitch;
+	auto width = data[0].size();
+	cudaMallocPitch((void**)&g_data, &pitch, width * sizeof(float), data.size());
+	for (size_t i = 0; i < data.size(); i++)
+	{
+		auto& current = data[i];
+		gpuErrchk(cudaMemcpy(g_data + i * width, &(current[0]), width * sizeof(float), cudaMemcpyHostToDevice));
+	}
+
+	cout << "==============" << endl;
+	cout << "GPU EVALUATION" << endl;
+	cout << "==============" << endl;
+
+	p->predict_gpu(g_data, data.size(), width);
+}
+
 int main(int argc, char* argv[])
 {
 	CLI::App app{ "CUDA Perceptron" };
@@ -85,6 +115,7 @@ int main(int argc, char* argv[])
 	auto p = new Perceptron(learning_rate, iterations, verbose);
 	training(p);
 	training_gpu(p);
-	//evaluation(p);
+	evaluation(p);
+	evaluation_gpu(p);	
 	return 0;
 }
