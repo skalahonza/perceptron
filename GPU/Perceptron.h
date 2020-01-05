@@ -11,8 +11,7 @@ public:
 	void fit_gpu(float* data, float* classes, int data_len, int size);
 	// Classify input data
 	float predict(const vector<float> &X);
-	float *predict_gpu(float *data, int length, int size);
-	int verify(float *predictions, float *classes, int size);
+	float *predict_gpu(float *data, int length, int size);	
 private:
 	int m_epochs;
 	float learn_rate;

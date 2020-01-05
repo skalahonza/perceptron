@@ -96,17 +96,3 @@ float* Perceptron::predict_gpu(float* data, int length, int size)
 	float* result = classify(data, weights_gpu, bias_gpu, length, size);
 	return result;
 }
-
-int Perceptron::verify(float* predictions, float* classes, int size)
-{
-	int* x = eval(predictions, classes, size);	
-	int result = 0;
-	int *tmp = (int*)calloc(size,sizeof(int));
-	gpuErrchk(cudaMemcpy(tmp, x, size*sizeof(int), cudaMemcpyDeviceToHost));			
-	cudaFree(x);	
-	for (size_t i = 0; i < size; i++)
-	{
-		result += tmp[i];
-	}
-	return result;
-}

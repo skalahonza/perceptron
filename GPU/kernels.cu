@@ -2,35 +2,6 @@
 #define THREADS_PER_BLOCK 256
 #define BLOCK_COUNT(SIZE) ((SIZE) / THREADS_PER_BLOCK + (((SIZE) % THREADS_PER_BLOCK) ? 1 : 0))
 
-__global__ void
-k_vector_add(float* A, const float* B, int numElements)
-{
-	int i = blockDim.x * blockIdx.x + threadIdx.x;
-	if (i < numElements)
-		A[i] = A[i] + B[i];
-}
-
-/// Add two vectors
-void vector_add(float* A, const float* B, int numElements) {
-	k_vector_add << <1, numElements >> > (A, B, numElements);
-}
-
-__global__ void
-k_eval(float* predictions, float* classes, int* result, int size)
-{
-	int i = blockDim.x * blockIdx.x + threadIdx.x;
-	if (i < size)
-		result[i] = (predictions[i] == classes[i]) ? 1 : 0;
-}
-
-int* eval(float* predictions, float* classes, int size)
-{
-	int* result;
-	cudaMalloc(&result, size*sizeof(int));
-	k_eval << <1, size >> > (predictions, classes, result, size);
-	return result;
-}
-
 __device__ void
 d_dot(const float* v1, const float* v2, float* out, int size)
 {
@@ -77,7 +48,7 @@ float* dot(float* a, float* b, int size) {
 	return c;
 }
 
-/// Compute udpate value for training
+/// Compute updpate value for training
 float* update(float learn_rate, float* expected, float* data, float* bias, float* weights, int size)
 {
 	float* result;
@@ -116,6 +87,7 @@ k_classify(float* data, float* weights, float* bias, float* result, int length, 
 	}
 }
 
+/// Classify input data with given weights and bias
 float* classify(float* data, float* weights, float* bias, int length, int size)
 {
 	float* result;
