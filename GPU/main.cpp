@@ -169,8 +169,8 @@ void evaluation_gpu(Perceptron* p) {
 int main(int argc, char* argv[])
 {
 	CLI::App app{ "CUDA Perceptron" };
-	app.add_option("-t,--train", train, "Training dataset, data and expected value.")->required();
-	app.add_option("-e,--eval", eval, "Dataset for evaluation, contains data with expected output.")->required();
+	app.add_option("-t,--train", train, "Training dataset, CSV file with data and expected value.")->required();
+	app.add_option("-e,--eval", eval, "Dataset for evaluation, CSV file with data with expected output.")->required();
 	app.add_option("-i,--iterations", iterations, "Number of iterations for training.")->default_val("5");
 	app.add_option("-l,--lrate", learning_rate, "Learning rate.")->default_val("0.1");
 	app.add_flag("-v,--verbose", verbose, "Specify for verbose output");
