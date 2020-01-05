@@ -49,6 +49,24 @@
     <CopyFileToFolders Include="..\Data\iris_train.csv">
       <Filter>Data</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Data\mnist_test1.csv">
+      <Filter>Data</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Data\mnist_test2.csv">
+      <Filter>Data</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Data\mnist_test3.csv">
+      <Filter>Data</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Data\mnist_train1.csv">
+      <Filter>Data</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Data\mnist_train2.csv">
+      <Filter>Data</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Data\mnist_train3.csv">
+      <Filter>Data</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="kernels.cu">

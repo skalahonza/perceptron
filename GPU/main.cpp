@@ -101,7 +101,18 @@ void evaluation_gpu(Perceptron* p) {
 
 	float* result = p->predict_gpu(g_data, data.size(), width);
 
-	int correct = p->verify(result, g_classes, data.size());
+	int correct = 0;
+
+	float* result_cpu = (float*)calloc(data.size(), sizeof(float));
+	gpuErrchk(cudaMemcpy(result_cpu, result, data.size() * sizeof(float), cudaMemcpyDeviceToHost));
+
+	for (size_t i = 0; i < data.size(); i++)
+	{
+		auto expected = classes[i];
+		if (verbose)
+			cout << "Classification: " << result_cpu[i] << " Expected: " << expected << endl;
+		if (result_cpu[i] == expected) correct++;
+	}	
 	int wrong = data.size() - correct;
 
 	cout << "==============" << endl;
@@ -123,8 +134,8 @@ int main(int argc, char* argv[])
 
 	auto p = new Perceptron(learning_rate, iterations, verbose);
 	training(p);
-	training_gpu(p);
 	evaluation(p);
+	training_gpu(p);
 	evaluation_gpu(p);
 	return 0;
 }

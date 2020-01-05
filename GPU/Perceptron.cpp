@@ -102,7 +102,7 @@ int Perceptron::verify(float* predictions, float* classes, int size)
 	int* x = eval(predictions, classes, size);	
 	int result = 0;
 	int *tmp = (int*)calloc(size,sizeof(int));
-	cudaMemcpy(tmp, x, size*sizeof(int), cudaMemcpyDeviceToHost);			
+	gpuErrchk(cudaMemcpy(tmp, x, size*sizeof(int), cudaMemcpyDeviceToHost));			
 	cudaFree(x);	
 	for (size_t i = 0; i < size; i++)
 	{
