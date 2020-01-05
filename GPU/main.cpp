@@ -59,6 +59,8 @@ void training_gpu(Perceptron* p) {
 
 	float* g_classes;
 	gpuErrchk(cudaMalloc(&g_classes, classes.size() * sizeof(float)));
+
+
 	//copy to GPU
 	auto startCopy = std::chrono::system_clock::now();
 	gpuErrchk(cudaMemcpy(g_classes, &classes[0], classes.size() * sizeof(float), cudaMemcpyHostToDevice));
@@ -75,7 +77,8 @@ void training_gpu(Perceptron* p) {
 
 	auto start = std::chrono::system_clock::now();
 	p->fit_gpu(g_data, g_classes, data.size(), width);
-	auto end = std::chrono::system_clock::now();
+	cudaDeviceSynchronize();
+	auto end = std::chrono::system_clock::now();	
 	print_time(start, end);
 	print_time(startCopy, end, "elapsed time with copying: ");
 }
@@ -140,14 +143,16 @@ void evaluation_gpu(Perceptron* p) {
 
 	auto start = std::chrono::system_clock::now();
 	float* result = p->predict_gpu(g_data, data.size(), width);
-
-	int correct = 0;
+	cudaDeviceSynchronize();
+	int correct = 0;	
+	auto end = std::chrono::system_clock::now();
 
 	float* result_cpu = (float*)calloc(data.size(), sizeof(float));
 	gpuErrchk(cudaMemcpy(result_cpu, result, data.size() * sizeof(float), cudaMemcpyDeviceToHost));
-	auto end = std::chrono::system_clock::now();
+	auto endCopy = std::chrono::system_clock::now();
+
 	print_time(start, end);
-	print_time(startCopy, end, "elapsed time with copying: ");
+	print_time(startCopy, endCopy, "elapsed time with copying: ");
 
 
 	for (size_t i = 0; i < data.size(); i++)
