@@ -1,0 +1,11 @@
+GPU.exe -t mnist_train1.csv -e mnist_test1.csv
+GPU.exe -e mnist_train1.csv -t mnist_test1.csv
+
+GPU.exe -t mnist_train2.csv -e mnist_test2.csv
+GPU.exe -e mnist_train2.csv -t mnist_test2.csv
+
+GPU.exe -t mnist_train3.csv -e mnist_test3.csv
+GPU.exe -e mnist_train3.csv -t mnist_test3.csv
+
+GPU.exe -t iris_train.csv -e iris_test3.csv
+GPU.exe -e iris_train.csv -t iris_test3.csv
