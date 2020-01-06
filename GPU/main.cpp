@@ -110,8 +110,8 @@ void evaluation(Perceptron* p) {
 
 	cout << "==============" << endl;
 	cout << "Total: " << data.size() << endl;
-	cout << "Correct: " << correct << " " << (correct / data.size()) * 100 << "%" << endl;
-	cout << "Wrong: " << wrong << " " << (wrong / data.size()) * 100 << "%" << endl;
+	cout << "Correct: " << correct << " " << (correct / (float)data.size()) * 100 << "%" << endl;
+	cout << "Wrong: " << wrong << " " << (wrong / (float)data.size()) * 100 << "%" << endl;
 	cout << "==============" << endl;
 }
 
@@ -166,8 +166,8 @@ void evaluation_gpu(Perceptron* p) {
 
 	cout << "==============" << endl;
 	cout << "Total: " << data.size() << endl;
-	cout << "Correct: " << correct << " " << (correct / data.size()) * 100 << "%" << endl;
-	cout << "Wrong: " << wrong << " " << (wrong / data.size()) * 100 << "%" << endl;
+	cout << "Correct: " << correct << " " << (correct / (float)data.size()) * 100 << "%" << endl;
+	cout << "Wrong: " << wrong << " " << (wrong / (float)data.size()) * 100 << "%" << endl;
 	cout << "==============" << endl;
 }
 
