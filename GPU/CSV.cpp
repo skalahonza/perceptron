@@ -16,7 +16,7 @@ tuple<vector<vector<float>>, vector<float>> CSV::parse_data_with_classes(const s
 			classes.push_back(line.back());
 		}
 	}
-	return {data, classes};
+	return std::make_tuple(data, classes);	
 }
 
 vector<float> CSV::parse_line(ifstream &file, char separator)
