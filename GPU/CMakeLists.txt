@@ -18,7 +18,7 @@ link_directories(/usr/local/cuda/lib64)
 include_directories(${PROJECT_INCLUDE_DIRS} /usr/local/cuda/include)
 
 
-add_executable(GPU main.cpp CLI11.hpp CSV.H debug.h default.h kernels.cuh Perceptron.h)
+add_executable(GPU main.cpp CLI11.hpp CSV.h debug.h default.h kernels.cuh Perceptron.h)
 
 target_compile_features(GPU PUBLIC cxx_std_11)
 
