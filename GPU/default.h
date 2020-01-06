@@ -5,6 +5,10 @@
 #include "device_atomic_functions.h"
 #include <device_functions.h>
 
+/**
+ * @brief Assert CUDA operation call
+ * 
+ */
 #define gpuErrchk(ans) { gpuAssert((ans), __FILE__, __LINE__); }
 inline void gpuAssert(cudaError_t code, const char* file, int line, bool abort = true)
 {

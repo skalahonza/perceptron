@@ -5,6 +5,12 @@
 #include "cuda_runtime.h"
 using namespace std;
 
+/**
+ * @brief Print cuda array into console
+ * 
+ * @param data Cuda array data
+ * @param size Size of array
+ */
 void print_cuda_array(int* data, int size)
 {
 	int* tmp = (int*)calloc(size, sizeof(int));
@@ -17,6 +23,12 @@ void print_cuda_array(int* data, int size)
 	free(tmp);
 }
 
+/**
+ * @brief Print cuda float array
+ * 
+  * @param data Cuda array data
+ * @param size Size of array
+ */
 void print_cuda_array(float* data, int size)
 {
 	float* tmp = (float*)calloc(size, sizeof(float));
@@ -29,6 +41,13 @@ void print_cuda_array(float* data, int size)
 	free(tmp);
 }
 
+/**
+ * @brief Print cuda 2D array (matrix) into console
+ * 
+ * @param data Cuda 2D array data
+ * @param width Array width
+ * @param height Array height
+ */
 void print_cuda2d_array(float* data, int width, int height)
 {
 	size_t size = width * height;

@@ -2,6 +2,7 @@
 #define THREADS_PER_BLOCK 256
 #define BLOCK_COUNT(SIZE) ((SIZE) / THREADS_PER_BLOCK + (((SIZE) % THREADS_PER_BLOCK) ? 1 : 0))
 
+
 __device__ void
 d_dot(const float* v1, const float* v2, float* out, int size)
 {
