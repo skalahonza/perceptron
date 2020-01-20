@@ -1,5 +1,6 @@
 # Perceptron
 Perceptron CPU vs GPU implementation.
+Project website: https://cent.felk.cvut.cz/courses/GPU/archives/2019-2020/W/skalaja7/
 
      CUDA Perceptron
      Usage: GPU.exe [OPTIONS]
